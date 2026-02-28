@@ -1,5 +1,1 @@
-flask
 telethon
-openai
-requests
-python-dotenv
