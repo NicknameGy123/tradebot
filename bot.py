@@ -1,17 +1,17 @@
 import os
-from flask import Flask, request, jsonify
+from telethon import TelegramClient, events
+from telethon.sessions import StringSession
 
-app = Flask(__name__)
+api_id = int(os.environ.get("API_ID"))
+api_hash = os.environ.get("API_HASH")
+session_string = os.environ.get("SESSION_STRING")
 
-@app.route("/")
-def home():
-    return "Bot aktif"
+client = TelegramClient(StringSession(session_string), api_id, api_hash)
 
-@app.route("/webhook", methods=["POST"])
-def webhook():
-    data = request.json
-    print("Gelen veri:", data)
-    return jsonify({"status": "ok"})
+@client.on(events.NewMessage)
+async def handler(event):
+    print("Mesaj geldi:", event.raw_text)
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+client.start()
+print("Userbot çalışıyor...")
+client.run_until_disconnected()
